@@ -1,8 +1,10 @@
 package com.vitaly.crudjdbcapp.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Post {
+public class Post implements Serializable {
+
     private Integer id;
     private String content;
 
@@ -11,6 +13,16 @@ public class Post {
     private String updated;
     private PostStatus postStatus;
     private List<Label> postLabels;
+
+    public Post(Integer id, String content, String created, String updated,List<Label> postLabels, PostStatus postStatus) {
+        this.id = id;
+        this.content = content;
+        this.created = created;
+        this.updated = updated;
+        this.postLabels = postLabels;
+        this.postStatus = postStatus;
+    }
+
 
     public Integer getId() {
         return id;
@@ -28,11 +40,11 @@ public class Post {
         this.content = content;
     }
 
-    public PostStatus getStatus() {
+    public PostStatus getPostStatus() {
         return postStatus;
     }
 
-    public void setStatus(PostStatus postStatus) {
+    public void setPostStatus(PostStatus postStatus) {
         this.postStatus = postStatus;
     }
 
@@ -58,6 +70,18 @@ public class Post {
 
     public void setUpdated(String updated) {
         this.updated = updated;
+    }
+
+    @Override
+    public String toString() {
+        return "\nPost{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", created='" + created + '\'' +
+                ", updated='" + updated + '\'' +
+                ", postStatus=" + postStatus +
+                ", postLabels=" + postLabels +
+                '}';
     }
 
 }

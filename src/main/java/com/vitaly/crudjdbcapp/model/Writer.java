@@ -7,7 +7,7 @@ public class Writer {
     private String firstName;
     private String lastName;
     private List<Post> writerPosts;
-    private PostStatus postStatus;
+    private Status status;
 
 
     public String getFirstName() {
@@ -26,12 +26,12 @@ public class Writer {
         this.lastName = lastName;
     }
 
-    public PostStatus getStatus() {
-        return postStatus;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setStatus(PostStatus postStatus) {
-        this.postStatus = postStatus;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
 

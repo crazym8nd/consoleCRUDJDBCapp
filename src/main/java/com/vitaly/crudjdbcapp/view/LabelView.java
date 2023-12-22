@@ -100,13 +100,12 @@ public class LabelView {
         } catch (Exception e) {
             System.out.println("Ошибка при получении списка лейблов");
         }
-
         System.out.println(PRINT_LABEL_LIST);
         if (labels != null) {
             labels.sort(Comparator.comparing(Label::getId));
-        }
-        for (Label l : labels) {
-            System.out.println(l.getId() + " " + l.getName());
+            for (Label l : labels) {
+                System.out.println(l.getId() + " " + l.getName());
+            }
         }
     }
 }

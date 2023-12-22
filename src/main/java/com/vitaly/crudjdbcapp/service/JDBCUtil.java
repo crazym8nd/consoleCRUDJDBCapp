@@ -17,12 +17,13 @@ public class JDBCUtil {
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     static final String DATABASE_URL = "jdbc:mysql://localhost/crudapp";
     static final String USER = "root";
-    static final String PASSWORD = "YOUR_PASSWORD";
+    static final String PASSWORD = "6663";
 
     public static Connection getConnnection() {
         Connection connection;
         try {
             connection = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
+            connection.setAutoCommit(false);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

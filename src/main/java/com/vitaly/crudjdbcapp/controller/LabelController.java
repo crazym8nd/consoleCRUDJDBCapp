@@ -1,7 +1,7 @@
 package com.vitaly.crudjdbcapp.controller;
 
 import com.vitaly.crudjdbcapp.model.Label;
-import com.vitaly.crudjdbcapp.model.PostStatus;
+import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.repository.LabelRepository;
 import com.vitaly.crudjdbcapp.repository.impls.JDBCLabelRepositoryImpl;
 
@@ -13,7 +13,7 @@ public class LabelController {
     public Label createLabel(String name) {
         Label createdLabel = new Label();
         createdLabel.setName(name);
-        createdLabel.setStatus(PostStatus.ACTIVE);
+        createdLabel.setStatus(Status.ACTIVE);
         return labelRep.save(createdLabel);
     }
 

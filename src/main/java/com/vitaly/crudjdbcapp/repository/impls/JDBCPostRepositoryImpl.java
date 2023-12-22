@@ -17,14 +17,10 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     private static final String POST_TABLE = "posts";
 
-    private static final String LABELS_FROM_POST_PARSE = "SELECT crudapp.labels.name\n" +
-            "FROM crudapp.post_label\n" +
-            "JOIN crudapp.labels ON post_label.label_id = crudapp.labels.id\n" +
-            "WHERE post_label.post_id = 1";
-    private static final String READ_QUERY = "SELECT * FROM " + POST_TABLE  + " WHERE poststatus = 'ACTIVE'";
-    private static final String INSERT_QUERY = "INSERT INTO " + POST_TABLE  + "(name, poststatus) VALUES (?, ?)";
-    private static final String UPDATE_QUERY = "UPDATE " + POST_TABLE  + " SET name = ?, poststatus = ? WHERE id = ?";
-    private static final String DELETE_QUERY = "UPDATE " + POST_TABLE  + " SET poststatus = ? WHERE id = ?";
+    private static final String READ_QUERY = "SELECT * FROM " + POST_TABLE  + " WHERE post_status = 'ACTIVE'";
+    private static final String INSERT_QUERY = "INSERT INTO " + POST_TABLE  + "(name, post_status) VALUES (?, ?)";
+    private static final String UPDATE_QUERY = "UPDATE " + POST_TABLE  + " SET name = ?, post_status = ? WHERE id = ?";
+    private static final String DELETE_QUERY = "UPDATE " + POST_TABLE  + " SET post_status = ? WHERE id = ?";
 
     private static List<Post> getPostsData(String query) {
         List<Post> posts = new ArrayList<>();
@@ -39,9 +35,16 @@ public class JDBCPostRepositoryImpl implements PostRepository {
                     String content = rs.getString("content");
                     String created = rs.getString("created");
                     String updated = rs.getString("updated");
-                    String postStatus = rs.getString("postStatus");
+                    String postStatus = rs.getString("post_status");
                     List<Label> postlabels = null;
-                    posts.add(new Post(id, content, created, updated, postlabels, (PostStatus.valueOf(postStatus))));
+                    posts.add(Post.builder()
+                                    .id(id)
+                                    .content(content)
+                                    .created(created)
+                                    .updated(updated)
+                                    .postLabels(postlabels)
+                                    .postStatus(PostStatus.valueOf(postStatus))
+                            .build());
                 }
 
                 try {

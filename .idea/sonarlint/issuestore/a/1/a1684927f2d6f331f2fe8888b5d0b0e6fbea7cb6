@@ -1,10 +1,18 @@
 
-g	java:S112T"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8ò¸¬É1
+g	java:S112Y"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8ôÌª·Ê1
 W
-java:S1141J"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8ó¸¬É1
-W
-java:S1141~"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8ó¸¬É1
+java:S1141O"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8úåº¶Ê1
 X
-java:S1141™"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8ó¸¬É1
+java:S1141€"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8úåº¶Ê1
 X
-java:S1141¯"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8Á”¿¬É1
+java:S1141›"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8úåº¶Ê1
+X
+java:S1141±"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8õÌª·Ê1
+T
+java:S1135,"2Complete the task associated to this TODO comment.(‰†®¿ûÿÿÿÿ8úÌª·Ê1
+T
+java:S1135A"2Complete the task associated to this TODO comment.(Ì±›ïıÿÿÿÿ8ûÌª·Ê1
+T
+java:S1135d"2Complete the task associated to this TODO comment.(Ğ–¹œşÿÿÿÿ8ıÌª·Ê1
+O
+java:S1068"3Remove this unused "GET_BY_ID_QUERY" private field.(ğö18€Íª·Ê1

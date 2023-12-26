@@ -3,7 +3,7 @@ package com.vitaly.crudjdbcapp.repository.impls;
 import com.vitaly.crudjdbcapp.model.Label;
 import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.repository.LabelRepository;
-import com.vitaly.crudjdbcapp.service.JDBCUtil;
+import com.vitaly.crudjdbcapp.utils.JDBCUtil;
 
 import java.sql.*;
 import java.util.ArrayList;

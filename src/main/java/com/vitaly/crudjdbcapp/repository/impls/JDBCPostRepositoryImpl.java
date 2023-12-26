@@ -5,7 +5,7 @@ import com.vitaly.crudjdbcapp.model.Post;
 import com.vitaly.crudjdbcapp.model.PostStatus;
 import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.repository.PostRepository;
-import com.vitaly.crudjdbcapp.service.JDBCUtil;
+import com.vitaly.crudjdbcapp.utils.JDBCUtil;
 import lombok.SneakyThrows;
 
 import java.sql.*;
@@ -22,6 +22,11 @@ public class JDBCPostRepositoryImpl implements PostRepository {
             "LEFT JOIN post_labels pl ON p.id = pl.post_id " +
             "LEFT JOIN labels l on pl.label_id = l.id " +
             "WHERE p.post_status = 'ACTIVE' ";
+    private static final String GET_BY_ID_QUERY = "SELECT * FROM " + POST_TABLE  + " p " +
+            "LEFT JOIN post_labels pl ON p.id = pl.post_id " +
+            "LEFT JOIN labels l on pl.label_id = l.id " +
+            "WHERE p.post_status = 'ACTIVE' AND p.id = ? ";
+
     private static final String INSERT_QUERY = "INSERT INTO " + POST_TABLE  + "( content, created, updated, post_status, writer_id) VALUES ( ?, ?, ?,?, ?)";
     private static final String UPDATE_QUERY = "UPDATE " + POST_TABLE  + " SET  content = ?, created = ?, updated = ?, post_status = ? WHERE id = ?";
     private static final String DELETE_QUERY = "UPDATE " + POST_TABLE  + " SET post_status = ? WHERE id = ?";
@@ -36,7 +41,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
                 while (rs.next()) {
                     int id = rs.getInt("p.id");
-
+//TODO mapping v otdelnij method
                     if (!postMap.containsKey(id)) {
                         List<Label> postLabels = new ArrayList<>();
 
@@ -57,7 +62,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
                         postMap.put(id, post);
                         posts.add(post);
                     }
-
+//TODO null checks
                     String status = rs.getString("status");
                     if (status != null && status.equals("ACTIVE")) {
                         int labelId = rs.getInt("label_id");
@@ -91,11 +96,8 @@ public class JDBCPostRepositoryImpl implements PostRepository {
     @SneakyThrows
     @Override
     public Post getById(Integer integer) {
-        List<Post> posts = getPostsData(READ_QUERY);
-        return posts.stream().
-                filter(p -> p.getId().equals(integer)).
-                findFirst().orElse(null);
-        }
+        return null;
+        } //TODO
 
 
 

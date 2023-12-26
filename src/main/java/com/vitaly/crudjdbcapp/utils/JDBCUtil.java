@@ -1,4 +1,4 @@
-package com.vitaly.crudjdbcapp.service;
+package com.vitaly.crudjdbcapp.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,7 +7,7 @@ import java.sql.SQLException;
 /*
 17-Dec-23
 gh /crazym8nd
-*/
+*/ // TODO connection sdelat singleton
 public class JDBCUtil {
 
     private JDBCUtil() {

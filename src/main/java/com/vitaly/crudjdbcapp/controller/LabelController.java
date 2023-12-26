@@ -4,33 +4,34 @@ import com.vitaly.crudjdbcapp.model.Label;
 import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.repository.LabelRepository;
 import com.vitaly.crudjdbcapp.repository.impls.JDBCLabelRepositoryImpl;
+import com.vitaly.crudjdbcapp.service.LabelService;
 
 import java.util.List;
 
 public class LabelController {
-    private final LabelRepository labelRep = new JDBCLabelRepositoryImpl();
+    private final LabelService labelService = new LabelService();
 
     public Label createLabel(String name) {
         Label createdLabel = new Label();
         createdLabel.setName(name);
         createdLabel.setStatus(Status.ACTIVE);
-        return labelRep.save(createdLabel);
+        return labelService.save(createdLabel);
     }
 
     public List<Label> getAll() {
-        return labelRep.getAll();
+        return labelService.getAll();
     }
 
     public Label getById(Integer id) {
-        return labelRep.getById(id);
+        return labelService.getById(id);
     }
 
     public void update(Label label) {
-        labelRep.update(label);
+        labelService.update(label);
     }
 
     public void deleteById(Integer id) {
-        labelRep.deleteById(id);
+        labelService.deleteById(id);
     }
 
 }

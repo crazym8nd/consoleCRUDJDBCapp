@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class MainView {
     private final LabelView labelView = new LabelView();
+    private final PostView postView = new PostView();
 
 
     private static final String MENU = "Выберете действие:\n" +
@@ -23,9 +24,9 @@ public class MainView {
                     case "1":
                         labelView.show();
                         break;
-                    //        case "2":
-                    //           postView.show();
-                    //           break;
+                            case "2":
+                               postView.show();
+                               break;
                     //      case "3":
                     //         writerView.show();
                     //            break;

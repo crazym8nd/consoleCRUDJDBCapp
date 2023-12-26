@@ -1,9 +1,6 @@
 package com.vitaly.crudjdbcapp.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,12 +9,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Post  {
-
     private Integer id;
     private String content;
-
     private String created;
-
     private String updated;
     private PostStatus postStatus;
     private List<Label> postLabels;

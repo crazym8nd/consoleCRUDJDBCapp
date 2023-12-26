@@ -5,10 +5,7 @@ import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.repository.LabelRepository;
 import com.vitaly.crudjdbcapp.service.JDBCUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,12 +52,23 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
     public Label save(Label label) {
 
         try (Connection connection = JDBCUtil.getConnnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, label.getName());
             preparedStatement.setString(2, label.getStatus().toString());
             preparedStatement.executeUpdate();
-            connection.commit();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int id = generatedKeys.getInt(1);
+                label.setId(id);
+            }
+            try {
+                connection.commit();
+            } catch (SQLException throwables) {
+                connection.rollback();
+                throwables.printStackTrace();
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

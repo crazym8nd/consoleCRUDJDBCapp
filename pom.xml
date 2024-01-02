@@ -10,12 +10,18 @@
     <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>20</maven.compiler.source>
+        <maven.compiler.target>20</maven.compiler.target>
         <mysql.version>8.2.0</mysql.version>
         <lombok.version>1.18.30</lombok.version>
         <dbutils.version>1.7</dbutils.version>
+        <junit.version>4.13.2</junit.version>
+        <jupiter.version>5.10.0</jupiter.version>
+        <assertj.version>3.24.2</assertj.version>
+        <mockito.version>5.4.0</mockito.version>
+        <h2.version>2.1.212</h2.version>
         <liquibase.version>4.25.1</liquibase.version>
+        <liquibase.propertyFile>${project.basedir}\src\main\resources\liquibase.properties</liquibase.propertyFile>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -24,6 +30,40 @@
         <groupId>com.mysql</groupId>
         <artifactId>mysql-connector-j</artifactId>
         <version>${mysql.version}</version>
+    </dependency>
+
+
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${jupiter.version}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${jupiter.version}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-launcher</artifactId>
+        <version>1.10.0</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.mockito</groupId>
+       <artifactId>mockito-junit-jupiter</artifactId>
+        <version>5.5.0</version>
+        <scope>test</scope>
+    </dependency>
+
+
+
+    <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj.version}</version>
     </dependency>
 
     <dependency>
@@ -38,18 +78,26 @@
         <version>${lombok.version}</version>
         <scope>provided</scope>
     </dependency>
-
-    <dependency>
-        <groupId>org.liquibase</groupId>
-        <artifactId>liquibase-maven-plugin</artifactId>
-        <version>${liquibase.version}</version>
-    </dependency>
-
-
-
 </dependencies>
-
-
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
+                    <version>${liquibase.version}</version>
+                    <configuration>
+                        <propertyFile>${liquibase.propertyFile}</propertyFile>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 
 </project>

@@ -1,18 +1,22 @@
 
-g	java:S112Y"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8ôÌª·Ê1
+g	java:S112Y"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8ÎØÙÌ1
 W
-java:S1141O"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8úåº¶Ê1
+java:S1141O"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8ÏØÙÌ1
 X
-java:S1141€"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8úåº¶Ê1
+java:S1141€"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8ÏØÙÌ1
 X
-java:S1141›"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8úåº¶Ê1
+java:S1141›"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8ÏØÙÌ1
 X
-java:S1141±"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8õÌª·Ê1
+java:S1141±"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8ÏØÙÌ1
+z
+java:S1488Ä"\Immediately return this expression instead of assigning it to the temporary variable "post".(Ì‚¡Ñ8‘ÙÌ1
 T
-java:S1135,"2Complete the task associated to this TODO comment.(‰†®¿ûÿÿÿÿ8úÌª·Ê1
+java:S1135,"2Complete the task associated to this TODO comment.(‰†®¿ûÿÿÿÿ8¤ÙÙÌ1
 T
-java:S1135A"2Complete the task associated to this TODO comment.(Ì±›ïıÿÿÿÿ8ûÌª·Ê1
+java:S1135A"2Complete the task associated to this TODO comment.(Ì±›ïıÿÿÿÿ8¥ÙÙÌ1
 T
-java:S1135d"2Complete the task associated to this TODO comment.(Ğ–¹œşÿÿÿÿ8ıÌª·Ê1
+java:S1135d"2Complete the task associated to this TODO comment.(Ğ–¹œşÿÿÿÿ8¦ÙÙÌ1
 O
-java:S1068"3Remove this unused "GET_BY_ID_QUERY" private field.(ğö18€Íª·Ê1
+java:S1068"3Remove this unused "GET_BY_ID_QUERY" private field.(ğö18ªÙÙÌ1
+L
+java:S1144¼".Remove this unused private "mapToPost" method.(‹ Ëß8«ÙÙÌ1

@@ -33,7 +33,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     private static List<Post> getPostsData(String query) {
         List<Post> posts = new ArrayList<>();
-        try (Connection connection = JDBCUtil.getConnnection();
+        try (Connection connection = JDBCUtil.getInstance().getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 connection.setAutoCommit(false);
                 ResultSet rs = preparedStatement.executeQuery();
@@ -109,7 +109,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     @Override
     public Post save(Post post) {
-        try (Connection connection = JDBCUtil.getConnnection();
+        try (Connection connection = JDBCUtil.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, post.getContent());
@@ -139,7 +139,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     @Override
     public Post update(Post post) {
-        try (Connection connection = JDBCUtil.getConnnection();
+        try (Connection connection = JDBCUtil.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)) {
             connection.setAutoCommit(false);
 
@@ -166,7 +166,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     @Override
     public void deleteById(Integer integer) {
-        try (Connection connection = JDBCUtil.getConnnection();
+        try (Connection connection = JDBCUtil.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY)) {
             connection.setAutoCommit(false);
 
@@ -183,5 +183,25 @@ public class JDBCPostRepositoryImpl implements PostRepository {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    private static Post mapToPost(ResultSet rs) throws SQLException {
+        int id = rs.getInt("p.id");
+        List<Label> postLabels = new ArrayList<>();
+
+        String content = rs.getString("content");
+        String created = rs.getString("created");
+        String updated = rs.getString("updated");
+        String postStatus = rs.getString("post_status");
+        Post post = Post.builder()
+                .id(id)
+                .content(content)
+                .created(created)
+                .updated(updated)
+                .postStatus(PostStatus.valueOf(postStatus))
+                .postLabels(postLabels)
+                .build();
+
+        return post;
     }
 }

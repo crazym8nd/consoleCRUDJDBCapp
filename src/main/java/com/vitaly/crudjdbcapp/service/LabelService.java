@@ -4,6 +4,8 @@ import com.vitaly.crudjdbcapp.model.Label;
 import com.vitaly.crudjdbcapp.repository.LabelRepository;
 import com.vitaly.crudjdbcapp.repository.impls.JDBCLabelRepositoryImpl;
 
+import java.util.List;
+
 // vie - controller - service - repository - bd
 /*
 26-Dec-23
@@ -21,5 +23,17 @@ public class LabelService {
     }
     public Label getById(Integer id){
         return labelRepository.getById(id);
+    }
+    public List<Label> getAll(){
+        return labelRepository.getAll();
+    }
+    public Label save (Label label){
+        return labelRepository.save(label);
+    }
+    public void update(Label label){
+        labelRepository.update(label);
+    }
+    public void deleteById(Integer id){
+        labelRepository.deleteById(id);
     }
 }

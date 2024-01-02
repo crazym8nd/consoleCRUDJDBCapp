@@ -1,3 +1,7 @@
 
 ‹
-java:S1130	"nRemove the declaration of thrown exception 'java.sql.SQLException', as it cannot be thrown from method's body.(Á¯¦þ8œ‡õ©É1
+java:S1130"nRemove the declaration of thrown exception 'java.sql.SQLException', as it cannot be thrown from method's body.(Á¯¦þ8¿ê‚ÔÌ1
+_
+java:S1128"BRemove this unused import 'com.vitaly.crudjdbcapp.utils.JDBCUtil'.(Ò³‘ê8Â¸ÖØÌ1
+M
+java:S1128"0Remove this unused import 'java.sql.Connection'.(¥ËôÖ8Â¸ÖØÌ1

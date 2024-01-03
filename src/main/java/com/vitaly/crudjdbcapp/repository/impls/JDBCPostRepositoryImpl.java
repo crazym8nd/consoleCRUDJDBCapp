@@ -9,10 +9,10 @@ import com.vitaly.crudjdbcapp.utils.JDBCUtil;
 import lombok.SneakyThrows;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static java.util.Calendar.*;
 
 public class JDBCPostRepositoryImpl implements PostRepository {
 
@@ -33,8 +33,10 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     private static List<Post> getPostsData(String query) {
         List<Post> posts = new ArrayList<>();
-        try (Connection connection = JDBCUtil.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try {
+            Connection connection = JDBCUtil.getInstance().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
                 connection.setAutoCommit(false);
                 ResultSet rs = preparedStatement.executeQuery();
                 Map<Integer, Post> postMap = new HashMap<>();
@@ -96,8 +98,58 @@ public class JDBCPostRepositoryImpl implements PostRepository {
     @SneakyThrows
     @Override
     public Post getById(Integer integer) {
-        return null;
-        } //TODO
+        Post post = null;
+
+        try{
+            PreparedStatement statement = JDBCUtil.getInstance().getConnection().prepareStatement(GET_BY_ID_QUERY);
+            statement.setInt(1, integer);
+            ResultSet rs = statement.executeQuery();
+            Map<Integer, Post> postMap = new HashMap<>();
+
+            while (rs.next()) {
+                int id = rs.getInt("p.id");
+                if (!postMap.containsKey(id)) {
+                    List<Label> postLabels = new ArrayList<>();
+
+                    String content = rs.getString("content");
+                    String created = rs.getString("created");
+                    String updated = rs.getString("updated");
+                    String postStatus = rs.getString("post_status");
+
+                    post = Post.builder()
+                            .id(id)
+                            .content(content)
+                            .created(created)
+                            .updated(updated)
+                            .postStatus(PostStatus.valueOf(postStatus))
+                            .postLabels(postLabels)
+                            .build();
+
+                    postMap.put(id, post);
+                }
+                String status = rs.getString("status");
+                if (status != null && status.equals("ACTIVE")) {
+                    int labelId = rs.getInt("label_id");
+                    String labelName = rs.getString("name");
+                    List<Label> postLabels = postMap.get(id).getPostLabels();
+                    postLabels.add(Label.builder()
+                            .id(labelId)
+                            .name(labelName)
+                            .status(Status.valueOf(status))
+                            .build());
+                }
+            }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
+        return post;
+    }
+
+
 
 
 
@@ -109,8 +161,9 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     @Override
     public Post save(Post post) {
-        try (Connection connection = JDBCUtil.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+        try {
+            Connection connection = JDBCUtil.getInstance().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
 
             preparedStatement.setString(1, post.getContent());
             preparedStatement.setString(2, post.getCreated());
@@ -139,8 +192,8 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     @Override
     public Post update(Post post) {
-        try (Connection connection = JDBCUtil.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)) {
+        try {Connection connection = JDBCUtil.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY);
             connection.setAutoCommit(false);
 
 
@@ -166,8 +219,8 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     @Override
     public void deleteById(Integer integer) {
-        try (Connection connection = JDBCUtil.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY)) {
+        try {Connection connection = JDBCUtil.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY);
             connection.setAutoCommit(false);
 
             preparedStatement.setString(1, Status.DELETED.toString());

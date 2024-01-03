@@ -27,8 +27,6 @@ t
 Dsrc/main/java/com/vitaly/crudjdbcapp/repository/LabelRepository.java,7\b\7b7eeb9a16c72a01349a859bc146a2edc1708bff
 c
 3src/main/java/com/vitaly/crudjdbcapp/AppRunner.java,a\0\a0ef9e0c91454906cc0a0889fd176fcc2c517fe7
-F
-consoleCRUDJDBCapp.iml,e\d\ed440e558ed2cc97fceebc5f9152c6b1a03f6939
 s
 Csrc/main/java/com/vitaly/crudjdbcapp/controller/PostController.java,7\0\707ec3580888d9f3b2e3b38e749de8df9b82e698
 u
@@ -66,3 +64,5 @@ s
 Csrc/main/java/com/vitaly/crudjdbcapp/repository/PostRepository.java,6\a\6af53f4682eb68004f79f744609293cdffa2f448
 u
 Esrc/main/java/com/vitaly/crudjdbcapp/repository/WriterRepository.java,d\a\da4487183c212fe9a7f255462db6fa0f7f41c9f0
+i
+9src/main/java/com/vitaly/crudjdbcapp/view/WriterView.java,c\e\ce6be556e206fd09b86d1424912967c2700b7f22

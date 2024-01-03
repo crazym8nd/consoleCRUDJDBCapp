@@ -1,11 +1,12 @@
 package com.vitaly.crudjdbcapp.view;
 
+import com.vitaly.crudjdbcapp.controller.LabelController;
 import com.vitaly.crudjdbcapp.controller.PostController;
+import com.vitaly.crudjdbcapp.model.Label;
 import com.vitaly.crudjdbcapp.model.Post;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /*
 18-Dec-23
@@ -55,10 +56,21 @@ public class PostView {
     }
 
     public void createPost() {
+        List<Label> postLabels = new ArrayList<>();
+        LabelController labelController = new LabelController();
+
         System.out.println(CREATE_POST_MSG);
         String content = scanner.nextLine();
+
+        LabelView labelView = new LabelView();
+        labelView.readLabels();
+        System.out.println("Введите ID лейбла для добавления к посту:");
+
+        Integer labelID = scanner.nextInt();
+        postLabels.add(labelController.getById(labelID));
+
         try {
-            Post createdPost = postController.createPost(content);
+            Post createdPost = postController.createPost(content, postLabels);
             System.out.println("Пост создан:" + createdPost);
         } catch (Exception e) {
             System.out.println("Ошибка при создании поста");
@@ -66,14 +78,25 @@ public class PostView {
     }
 
     public void editPost() {
+        LabelController labelController = new LabelController();
         readPosts();
         System.out.println(EDIT_POST_MSG);
+        Integer id = Integer.parseInt(scanner.nextLine());
         try {
-            Integer id = Integer.parseInt(scanner.nextLine());
             Post postToUpdate = postController.getById(id);
+            postToUpdate.setUpdated(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(Calendar.getInstance().getTime()));;
             System.out.println("Введите новый content:");
             String content = scanner.nextLine();
             postToUpdate.setContent(content);
+
+            LabelView labelView = new LabelView();
+            labelView.readLabels();
+            System.out.println("Введите ID лейбла для добавления к посту:");
+            Integer labelID = scanner.nextInt();
+            List<Label> postLabels = new ArrayList<>();
+            postLabels.add(labelController.getById(labelID));
+
+
             postController.update(postToUpdate);
             System.out.println("Изменения сохранены");
         } catch (Exception e) {

@@ -6,6 +6,8 @@ public class MainView {
     private final LabelView labelView = new LabelView();
     private final PostView postView = new PostView();
 
+    private final WriterView writerView = new WriterView();
+
 
     private static final String MENU = "Выберете действие:\n" +
             "1. Работа с лейблами\n" +
@@ -19,21 +21,24 @@ public class MainView {
             boolean isExit = false;
             do {
                 System.out.println(MENU);
-                String selectedOption = scanner.nextLine();
+                Integer selectedOption = scanner.nextInt();
                 switch (selectedOption) {
-                    case "1":
-                        labelView.show();
-                        break;
-                            case "2":
-                               postView.show();
-                               break;
-                    //      case "3":
-                    //         writerView.show();
-                    //            break;
-                    case "4":
+                        case 1:
+                            labelView.show();
+                            break;
+
+                        case 2:
+                            postView.show();
+                            break;
+
+                        case 3: writerView.show();
+                             break;
+
+                        case 4:
                         isExit = true;
                         break;
-                    default:
+
+                        default:
                         System.out.println("Если вы не кот, то выберите пункт меню и введите цифру!");
                         break;
                 }

@@ -7,22 +7,21 @@ import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.repository.impls.JDBCPostRepositoryImpl;
 import com.vitaly.crudjdbcapp.service.PostService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class PostController {
     private final PostService postService = new PostService();
 
-    public Post createPost(String   content) {
+    public Post createPost(String   content, List<Label> postLabels) {
         Post createdpost = new Post();
-        List<Label> postlabels = new ArrayList<>();
-        postlabels.add(new Label(99, "Java", Status.ACTIVE));
         createdpost.setContent(content);
         createdpost.setPostStatus(PostStatus.ACTIVE);
-     //   java.util.Date utilDate = new java.sql.Date(new java.util.Date().getTime());
-        createdpost.setCreated("NOW");
-        createdpost.setUpdated("NOW");
-        createdpost.setPostLabels(postlabels);
+        createdpost.setCreated(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(Calendar.getInstance().getTime()));
+        createdpost.setUpdated("NEW");
+        createdpost.setPostLabels(postLabels);
         return postService.save(createdpost);
     }
     public List<Post> getAll() {

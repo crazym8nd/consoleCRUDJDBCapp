@@ -1,6 +1,6 @@
-    --liquibase formatted sql
+--liquibase formatted sql
 
-    --changeset vitaly:1
+--changeset vitaly:1
 CREATE DATABASE  IF NOT EXISTS `crudapp`;
 USE `crudapp`;
 DROP TABLE IF EXISTS `labels`;

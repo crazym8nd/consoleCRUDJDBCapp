@@ -40,18 +40,12 @@ Ssrc/main/java/com/vitaly/crudjdbcapp/repository/impls/JDBCWriterRepositoryImpl.
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
-[
-+src/main/resources/sql/db.changelog-1.0.sql,2\d\2dfa7e4f5725278f81d66538e26ebbec35345de2
-^
-.src/main/resources/sql/db.changelog-master.xml,4\d\4d83623313ec3e469b83eb74c3862fe4ad9fe009
 g
 7src/main/java/com/vitaly/crudjdbcapp/view/MainView.java,f\6\f609668765d820e25ea2411366bae43199ebb1bf
 g
 7src/main/java/com/vitaly/crudjdbcapp/view/PostView.java,2\5\25880b54955896062397c1cfc08cade4dc3e6cc5
 h
 8src/main/java/com/vitaly/crudjdbcapp/view/LabelView.java,e\f\ef0f91676394fd6a735f9fe3f594fbf76966c8e9
-W
-'src/main/resources/liquibase.properties,5\1\51bfa5745df1e55e3d6018c4946829b87e37370a
 d
 4src/main/java/com/vitaly/crudjdbcapp/model/Post.java,8\2\8200e85932703bb62935dfb15421e79236056554
 f
@@ -66,3 +60,23 @@ u
 Esrc/main/java/com/vitaly/crudjdbcapp/repository/WriterRepository.java,d\a\da4487183c212fe9a7f255462db6fa0f7f41c9f0
 i
 9src/main/java/com/vitaly/crudjdbcapp/view/WriterView.java,c\e\ce6be556e206fd09b86d1424912967c2700b7f22
+E
+example-changelog.sql,d\3\d3d2956dc6ad3fef71dc7bc985d4beb3275317b3
+P
+ liquibase.advanced.flowfile.yaml,d\3\d33a26c5c99e70f2343096e6d4a28fc50f4253fc
+G
+liquibase.flowfile.yaml,0\2\02b361db429cd26028ec0734e869be2b228116b2
+D
+liquibase.properties,4\5\45156c9273acb0a15ad98105a4415b92bf51bac9
+D
+changelog-master.sql,8\5\853e817891072ed7ffe7258962a63ace73018d47
+M
+liquibase.checks-package.yaml,d\8\d81310690169851acab63d0bacdb197e65414138
+G
+liquibase.endstage.flow,1\a\1ad037069a6143c66303b6f80c5d99dc141b890f
+L
+liquibase.flowvariables.yaml,7\0\70199c1cffd23514608bd165c7c60e27a4886c42
+B
+test-changelog.sql,2\5\25edec66a773e2e29548547e8349192b470842a8
+H
+test-changelog.mysql.sql,4\4\44bf5a8f1af97c483a110d393f02ec956a8c1c7e

@@ -80,3 +80,7 @@ B
 test-changelog.sql,2\5\25edec66a773e2e29548547e8349192b470842a8
 H
 test-changelog.mysql.sql,4\4\44bf5a8f1af97c483a110d393f02ec956a8c1c7e
+q
+Asrc/test/java/com/vitaly/crudjdbcapp/service/PostServiceTest.java,a\4\a4944f238b32d3c3dbf1da985669f9724e676260
+s
+Csrc/test/java/com/vitaly/crudjdbcapp/service/WriterServiceTest.java,e\2\e2b1aff36fabf4de614a08ecd2f39d5b02e7ca34

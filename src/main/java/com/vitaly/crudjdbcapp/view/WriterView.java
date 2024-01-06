@@ -17,6 +17,7 @@ gh /crazym8nd
 public class WriterView {
 
     private final WriterController writerController = new WriterController();
+    private final PostController postController = new PostController();
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -61,20 +62,14 @@ public class WriterView {
     }
     public void createWriter(){
         List<Post> writerPosts = new ArrayList<>();
-        PostController postController = new PostController();
 
         System.out.println(CREATE_WRITER_MSG);
         String firstName = scanner.nextLine();
         System.out.println("Введите фамилию:");
         String lastName = scanner.nextLine();
 
-        PostView postView = new PostView();
-        postView.readPosts();
-        System.out.println("Введите ID поста для доабвления к писателю:");
-        Integer postID = scanner.nextInt();
-        writerPosts.add(postController.getById(postID));
         try{
-            Writer createdWriter = writerController.createWriter(firstName, lastName, writerPosts);
+            Writer createdWriter = writerController.createWriter(firstName, lastName);
             System.out.println("Писатель создан:" + createdWriter);
         } catch (Exception e) {
             System.out.println("Ошибка при создании писателя");
@@ -82,7 +77,6 @@ public class WriterView {
     }
 
     public void editWriter(){
-        PostController postController = new PostController();
         readWriters();
         System.out.println(EDIT_WRITER_MSG);
         Integer id = Integer.parseInt(scanner.nextLine());

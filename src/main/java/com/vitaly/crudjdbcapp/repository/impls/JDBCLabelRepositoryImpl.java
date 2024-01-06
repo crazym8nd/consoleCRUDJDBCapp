@@ -56,33 +56,34 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
 
     @Override
     public Label save(Label label) {
-
-        try(PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(INSERT_QUERY)) {
+        try {
             Connection connection = JDBCUtil.getConnection();
             connection.setAutoCommit(false);
+            try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, label.getName());
-            preparedStatement.setString(2, label.getStatus().toString());
-            preparedStatement.executeUpdate();
 
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                int id = generatedKeys.getInt(1);
-                label.setId(id);
-            }
-            try {
-                connection.commit();
-            } catch (SQLException throwables) {
-                connection.rollback();
-                throwables.printStackTrace();
+                preparedStatement.setString(1, label.getName());
+                preparedStatement.setString(2, label.getStatus().toString());
+                preparedStatement.executeUpdate();
+
+                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    int id = generatedKeys.getInt(1);
+                    label.setId(id);
+                }
+                try {
+                    connection.commit();
+                } catch (SQLException throwables) {
+                    connection.rollback();
+                    throwables.printStackTrace();
+                }
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+                throwables.printStackTrace();
+            }
 
-        return label;
+            return label;
     }
-
     @Override
     public Label update(Label label) {
         try(PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(UPDATE_QUERY)){

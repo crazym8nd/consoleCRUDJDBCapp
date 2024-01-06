@@ -30,7 +30,10 @@ public class JDBCPostRepositoryImpl implements PostRepository {
     private static final String INSERT_QUERY = "INSERT INTO " + POST_TABLE  + "( content, created, updated, post_status, writer_id) VALUES ( ?, ?, ?,?, ?)";
     private static final String INSERT_POST_LABELS = "INSERT INTO post_labels (post_id, label_id) VALUES (?, ?)";
     private static final String INSERT_WRITER_POSTS = "INSERT INTO writer_posts (writer_id, post_id) VALUES (?, ?)";
-    private static final String UPDATE_QUERY = "UPDATE " + POST_TABLE  + " SET  content = ?, created = ?, updated = ?, post_status = ? WHERE id = ?";
+    private static final String UPDATE_QUERY = "UPDATE " + POST_TABLE  + " SET  content = ?, created = ?, updated = ?, post_status = ?, writer_id = ? WHERE id = ?";
+    private static final String UPDATE_POST_LABELS_QUERY = "UPDATE post_labels SET label_id = ? WHERE post_id = ?";
+    private static final String UPDATE_WRITER_POSTS_QUERY = "UPDATE writer_posts SET writer_id = ? WHERE post_id = ?";
+
     private static final String DELETE_QUERY = "UPDATE " + POST_TABLE  + " SET post_status = ? WHERE id = ?";
 
     @SneakyThrows
@@ -193,30 +196,45 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
         @Override
     public Post update(Post post) {
-        try (PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(UPDATE_QUERY)) {
+        try {
             Connection connection = JDBCUtil.getConnection();
             connection.setAutoCommit(false);
 
+            try (PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(UPDATE_QUERY)) {
 
-            preparedStatement.setString(1, post.getContent());
-            preparedStatement.setString(2, post.getCreated());
-            preparedStatement.setString(3, post.getUpdated());
-            preparedStatement.setString(4, post.getPostStatus().toString());
-            preparedStatement.setInt(5, post.getId());
+                preparedStatement.setString(1, post.getContent());
+                preparedStatement.setString(2, post.getCreated());
+                preparedStatement.setString(3, post.getUpdated());
+                preparedStatement.setString(4, post.getPostStatus().toString());
+                preparedStatement.setInt(5, post.getWriterId());
+                preparedStatement.setInt(6, post.getId());
 
-            preparedStatement.executeUpdate();
+                preparedStatement.executeUpdate();
+            }
+            try (PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(UPDATE_POST_LABELS_QUERY)) {
 
-            try {
-                connection.commit();
+                preparedStatement.setInt(1, post.getPostLabels().get(0).getId());
+                preparedStatement.setInt(2, post.getId());
+                preparedStatement.executeUpdate();
+            }
+            try (PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(UPDATE_WRITER_POSTS_QUERY)) {
+
+                preparedStatement.setInt(1, post.getWriterId());
+                preparedStatement.setInt(2, post.getId());
+                preparedStatement.executeUpdate();
+            }
+                try {
+                    connection.commit();
+                } catch (SQLException throwables) {
+                    connection.rollback();
+                    throwables.printStackTrace();
+                }
             } catch (SQLException throwables) {
-                connection.rollback();
                 throwables.printStackTrace();
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            return post;
         }
-        return post;
-    }
+
 
     @Override
     public void deleteById(Integer integer) {

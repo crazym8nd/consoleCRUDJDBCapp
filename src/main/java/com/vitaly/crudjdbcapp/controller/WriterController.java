@@ -5,12 +5,14 @@ import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.model.Writer;
 import com.vitaly.crudjdbcapp.service.WriterService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WriterController {
     private final WriterService writerService = new WriterService();
-    public Writer createWriter(String firsName, String lastName, List<Post> writerPosts){
+    public Writer createWriter(String firsName, String lastName){
         Writer createdWriter = new Writer();
+        List<Post> writerPosts = new ArrayList<>();
         createdWriter.setFirstName(firsName);
         createdWriter.setLastName(lastName);
         createdWriter.setStatus(Status.ACTIVE);

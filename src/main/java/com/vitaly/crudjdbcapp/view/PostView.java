@@ -107,13 +107,31 @@ public class PostView {
             String content = scanner.nextLine();
             postToUpdate.setContent(content);
 
-            LabelView labelView = new LabelView();
-            labelView.readLabels();
+            List<Label> labels = labelController.getAll();
+            if (labels != null) {
+                labels.sort(Comparator.comparing(Label::getId));
+                for (Label l : labels) {
+                    System.out.println(l.getId() + " " + l.getName());
+                }
+            }
             System.out.println("Введите ID лейбла для добавления к посту:");
-            Integer labelID = scanner.nextInt();
-            List<Label> postLabels = new ArrayList<>();
-            postLabels.add(labelController.getById(labelID));
+            Integer labelID = Integer.parseInt(scanner.nextLine());
 
+            List<Label> labelstoAdd = new ArrayList<>();
+            labelstoAdd.add(labelController.getById(labelID));
+            postToUpdate.setPostLabels(labelstoAdd);
+
+            List<Writer> writers = writerController.getAll();
+            if (writers != null) {
+                writers.sort(Comparator.comparing(Writer::getId));
+                for (Writer w : writers) {
+                    System.out.println(w.getId() + " " + w.getFirstName());
+                }
+            }
+
+            System.out.println("Введите ID автора:");
+            Integer writerId = Integer.parseInt(scanner.nextLine());
+            postToUpdate.setWriterId(writerId);
 
             postController.update(postToUpdate);
             System.out.println("Изменения сохранены");

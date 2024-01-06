@@ -37,57 +37,30 @@ public class JDBCPostRepositoryImpl implements PostRepository {
     @SneakyThrows
     @Override
     public Post getById(Integer integer) {
-        Post post = null;
-
         try(PreparedStatement statement = JDBCUtil.getPreparedStatement(GET_BY_ID_QUERY)){
             statement.setInt(1, integer);
             ResultSet rs = statement.executeQuery();
             Map<Integer, Post> postMap = new HashMap<>();
 
             while (rs.next()) {
+
                 int id = rs.getInt("p.id");
                 if (!postMap.containsKey(id)) {
-                    List<Label> postLabels = new ArrayList<>();
-
-                    String content = rs.getString("content");
-                    String created = rs.getString("created");
-                    String updated = rs.getString("updated");
-                    String postStatus = rs.getString("post_status");
-
-                    post = Post.builder()
-                            .id(id)
-                            .content(content)
-                            .created(created)
-                            .updated(updated)
-                            .postStatus(PostStatus.valueOf(postStatus))
-                            .postLabels(postLabels)
-                            .build();
-
-                    postMap.put(id, post);
+                    postMap.put(id, mapToPost(rs));
                 }
                 String status = rs.getString("status");
                 if (status != null && status.equals("ACTIVE")) {
-                    int labelId = rs.getInt("label_id");
-                    String labelName = rs.getString("name");
                     List<Label> postLabels = postMap.get(id).getPostLabels();
-                    postLabels.add(Label.builder()
-                            .id(labelId)
-                            .name(labelName)
-                            .status(Status.valueOf(status))
-                            .build());
+                    postLabels.add(mapToLabel(rs));
                 }
             }
 
-
+            return postMap.get(integer);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return post;
+
     }
-
-
-
-
 
     @SneakyThrows
     @Override

@@ -34,7 +34,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     private static final String DELETE_QUERY = "UPDATE " + POST_TABLE  + " SET post_status = ? WHERE id = ?";
 
-    @SneakyThrows
+
     @Override
     public Post getById(Integer integer) {
         try(PreparedStatement statement = JDBCUtil.getPreparedStatement(GET_BY_ID_QUERY)){
@@ -62,7 +62,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     }
 
-    @SneakyThrows
+
     @Override
     public List<Post> getAll() {
         List<Post> posts = new ArrayList<>();
@@ -90,7 +90,7 @@ public class JDBCPostRepositoryImpl implements PostRepository {
         return posts;
     }
 
-    @SneakyThrows
+
     @Override
     public Post save(Post post) {
         try {

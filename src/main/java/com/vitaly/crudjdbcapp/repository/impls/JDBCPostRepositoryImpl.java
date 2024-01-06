@@ -28,6 +28,8 @@ public class JDBCPostRepositoryImpl implements PostRepository {
             "WHERE p.post_status = 'ACTIVE' AND p.id = ? ";
 
     private static final String INSERT_QUERY = "INSERT INTO " + POST_TABLE  + "( content, created, updated, post_status, writer_id) VALUES ( ?, ?, ?,?, ?)";
+    private static final String INSERT_POST_LABELS = "INSERT INTO post_labels (post_id, label_id) VALUES (?, ?)";
+    private static final String INSERT_WRITER_POSTS = "INSERT INTO writer_posts (writer_id, post_id) VALUES (?, ?)";
     private static final String UPDATE_QUERY = "UPDATE " + POST_TABLE  + " SET  content = ?, created = ?, updated = ?, post_status = ? WHERE id = ?";
     private static final String DELETE_QUERY = "UPDATE " + POST_TABLE  + " SET post_status = ? WHERE id = ?";
 
@@ -151,14 +153,27 @@ public class JDBCPostRepositoryImpl implements PostRepository {
                 preparedStatement.setString(2, post.getCreated());
                 preparedStatement.setString(3, post.getUpdated());
                 preparedStatement.setString(4, post.getPostStatus().toString());
-                preparedStatement.setInt(5, 1);
-                preparedStatement.executeUpdate();
+                preparedStatement.setInt(5, post.getWriterId());
 
+
+
+                preparedStatement.executeUpdate();
                 ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     int id = generatedKeys.getInt(1);
                     post.setId(id);
                 }
+            }
+            try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_POST_LABELS)){
+            preparedStatement.setInt(1, post.getId());
+            preparedStatement.setInt(2, post.getPostLabels().get(0).getId());
+            preparedStatement.executeUpdate();
+            }
+            try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_WRITER_POSTS)){
+                preparedStatement.setInt(1, post.getWriterId());
+                preparedStatement.setInt(2, post.getId());
+                preparedStatement.executeUpdate();
+            }
 
                 try {
                     connection.commit();
@@ -166,15 +181,15 @@ public class JDBCPostRepositoryImpl implements PostRepository {
                     connection.rollback();
                     throwables.printStackTrace();
                 }
-            } catch (SQLException throwables) {
+            }
+
+            catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
             return post;
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
-    }
+
 
         @Override
     public Post update(Post post) {

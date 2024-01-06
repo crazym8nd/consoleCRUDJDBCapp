@@ -15,13 +15,14 @@ import java.util.List;
 public class PostController {
     private final PostService postService = new PostService();
 
-    public Post createPost(String   content, List<Label> postLabels) {
+    public Post createPost(String   content, List<Label> postLabels, Integer writerId) {
         Post createdpost = new Post();
         createdpost.setContent(content);
         createdpost.setPostStatus(PostStatus.ACTIVE);
         createdpost.setCreated(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(Calendar.getInstance().getTime()));
         createdpost.setUpdated("NEW");
         createdpost.setPostLabels(postLabels);
+        createdpost.setWriterId(writerId);
         return postService.save(createdpost);
     }
     public List<Post> getAll() {

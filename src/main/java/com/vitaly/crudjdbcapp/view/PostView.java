@@ -2,8 +2,10 @@ package com.vitaly.crudjdbcapp.view;
 
 import com.vitaly.crudjdbcapp.controller.LabelController;
 import com.vitaly.crudjdbcapp.controller.PostController;
+import com.vitaly.crudjdbcapp.controller.WriterController;
 import com.vitaly.crudjdbcapp.model.Label;
 import com.vitaly.crudjdbcapp.model.Post;
+import com.vitaly.crudjdbcapp.model.Writer;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -14,6 +16,8 @@ gh /crazym8nd
 */
 public class PostView {
     private final PostController postController = new PostController();
+    private final LabelController labelController = new LabelController();
+    private final WriterController writerController = new WriterController();
     private final Scanner scanner = new Scanner(System.in);
 
     private static final String MENUPOST = "Выберете действие:\n" +
@@ -57,20 +61,35 @@ public class PostView {
 
     public void createPost() {
         List<Label> postLabels = new ArrayList<>();
-        LabelController labelController = new LabelController();
 
         System.out.println(CREATE_POST_MSG);
         String content = scanner.nextLine();
 
-        LabelView labelView = new LabelView();
-        labelView.readLabels();
+        List<Label> labels = labelController.getAll();
+        if (labels != null) {
+            labels.sort(Comparator.comparing(Label::getId));
+            for (Label l : labels) {
+                System.out.println(l.getId() + " " + l.getName());
+            }
+        }
         System.out.println("Введите ID лейбла для добавления к посту:");
 
-        Integer labelID = scanner.nextInt();
+        Integer labelID = Integer.parseInt(scanner.nextLine());
         postLabels.add(labelController.getById(labelID));
 
+
+        List<Writer> writers = writerController.getAll();
+        if (writers != null) {
+            writers.sort(Comparator.comparing(Writer::getId));
+            for (Writer w : writers) {
+                System.out.println(w.getId() + " " + w.getFirstName());
+            }
+        }
+        System.out.println("Введите ID автора:");
+        Integer writerId = Integer.parseInt(scanner.nextLine());
+
         try {
-            Post createdPost = postController.createPost(content, postLabels);
+            Post createdPost = postController.createPost(content, postLabels, writerId);
             System.out.println("Пост создан:" + createdPost);
         } catch (Exception e) {
             System.out.println("Ошибка при создании поста");
@@ -78,7 +97,6 @@ public class PostView {
     }
 
     public void editPost() {
-        LabelController labelController = new LabelController();
         readPosts();
         System.out.println(EDIT_POST_MSG);
         Integer id = Integer.parseInt(scanner.nextLine());

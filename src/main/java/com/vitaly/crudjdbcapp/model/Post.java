@@ -15,5 +15,6 @@ public class Post  {
     private String updated;
     private PostStatus postStatus;
     private List<Label> postLabels;
+    private Integer writerId;
 }
 

@@ -1,39 +1,32 @@
 package com.vitaly.crudjdbcapp.utils;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 /*
 17-Dec-23
 gh /crazym8nd
 */
 public class JDBCUtil {
-    private static JDBCUtil instance;
     private static Connection connection;
-    static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    static final String DATABASE_URL = "jdbc:mysql://localhost/crudapp";
-    static final String USER = "root";
-    static final String PASSWORD = "6663";
+    private static final String DATABASE_URL = "jdbc:mysql://localhost/crudapp";
+    private static final String USER = "root";
+    private static final String PASSWORD = "6663";
 
-    private JDBCUtil() {
-    }
 
-    public static JDBCUtil getInstance(){
-        if(instance == null){
-            instance = new JDBCUtil();
-        }
-        return instance;
-    }
-    public Connection getConnection(){
+    public static Connection getConnection(){
         if(connection == null){
-            try{ connection = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
-            connection.setAutoCommit(false);}
-            catch (SQLException e){
+            try { connection = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
+            } catch (SQLException e){
                 e.printStackTrace();
+                System.exit(1);
             }
         }
         return connection;
+    }
+
+    public static PreparedStatement getPreparedStatement(String sql) throws SQLException{
+
+        return getConnection().prepareStatement(sql);
     }
 
 }

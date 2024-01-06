@@ -31,77 +31,12 @@ public class JDBCPostRepositoryImpl implements PostRepository {
     private static final String UPDATE_QUERY = "UPDATE " + POST_TABLE  + " SET  content = ?, created = ?, updated = ?, post_status = ? WHERE id = ?";
     private static final String DELETE_QUERY = "UPDATE " + POST_TABLE  + " SET post_status = ? WHERE id = ?";
 
-    private static List<Post> getPostsData(String query) {
-        List<Post> posts = new ArrayList<>();
-        try {
-            Connection connection = JDBCUtil.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-
-                connection.setAutoCommit(false);
-                ResultSet rs = preparedStatement.executeQuery();
-                Map<Integer, Post> postMap = new HashMap<>();
-
-                while (rs.next()) {
-                    int id = rs.getInt("p.id");
-//TODO mapping v otdelnij method
-                    if (!postMap.containsKey(id)) {
-                        List<Label> postLabels = new ArrayList<>();
-
-                        String content = rs.getString("content");
-                        String created = rs.getString("created");
-                        String updated = rs.getString("updated");
-                        String postStatus = rs.getString("post_status");
-
-                        Post post = Post.builder()
-                                .id(id)
-                                .content(content)
-                                .created(created)
-                                .updated(updated)
-                                .postStatus(PostStatus.valueOf(postStatus))
-                                .postLabels(postLabels)
-                                .build();
-
-                        postMap.put(id, post);
-                        posts.add(post);
-                    }
-//TODO null checks
-                    String status = rs.getString("status");
-                    if (status != null && status.equals("ACTIVE")) {
-                        int labelId = rs.getInt("label_id");
-                        String labelName = rs.getString("name");
-                        List<Label> postLabels = postMap.get(id).getPostLabels();
-                        postLabels.add(Label.builder()
-                                .id(labelId)
-                                .name(labelName)
-                                .status(Status.valueOf(status))
-                                .build());
-                    }
-                }
-
-                try {
-                    connection.commit();
-                } catch (SQLException throwables) {
-                    connection.rollback();
-                    throwables.printStackTrace();
-                }
-            } catch (SQLException throwables) {
-                try {
-                    throw throwables;
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        return posts;
-    }
-
-
     @SneakyThrows
     @Override
     public Post getById(Integer integer) {
         Post post = null;
 
-        try{
-            PreparedStatement statement = JDBCUtil.getInstance().getConnection().prepareStatement(GET_BY_ID_QUERY);
+        try(PreparedStatement statement = JDBCUtil.getPreparedStatement(GET_BY_ID_QUERY)){
             statement.setInt(1, integer);
             ResultSet rs = statement.executeQuery();
             Map<Integer, Post> postMap = new HashMap<>();
@@ -156,44 +91,95 @@ public class JDBCPostRepositoryImpl implements PostRepository {
     @SneakyThrows
     @Override
     public List<Post> getAll() {
-        return getPostsData(READ_QUERY);
+        List<Post> posts = new ArrayList<>();
+        try(PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(READ_QUERY)){
+            ResultSet rs = preparedStatement.executeQuery();
+            Map<Integer, Post> postMap = new HashMap<>();
+
+            while (rs.next()) {
+                int id = rs.getInt("p.id");
+//TODO mapping v otdelnij method
+                if (!postMap.containsKey(id)) {
+                    List<Label> postLabels = new ArrayList<>();
+
+                    String content = rs.getString("content");
+                    String created = rs.getString("created");
+                    String updated = rs.getString("updated");
+                    String postStatus = rs.getString("post_status");
+
+                    Post post = Post.builder()
+                            .id(id)
+                            .content(content)
+                            .created(created)
+                            .updated(updated)
+                            .postStatus(PostStatus.valueOf(postStatus))
+                            .postLabels(postLabels)
+                            .build();
+
+                    postMap.put(id, post);
+                    posts.add(post);
+                }
+//TODO null checks
+                String status = rs.getString("status");
+                if (status != null && status.equals("ACTIVE")) {
+                    int labelId = rs.getInt("label_id");
+                    String labelName = rs.getString("name");
+                    List<Label> postLabels = postMap.get(id).getPostLabels();
+                    postLabels.add(Label.builder()
+                            .id(labelId)
+                            .name(labelName)
+                            .status(Status.valueOf(status))
+                            .build());
+                }
+            }
+        } catch (SQLException throwables) {
+            throw new RuntimeException(throwables.getMessage());
+        }
+        return posts;
     }
 
+    @SneakyThrows
     @Override
     public Post save(Post post) {
         try {
-            Connection connection = JDBCUtil.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+            Connection connection = JDBCUtil.getConnection();
+            connection.setAutoCommit(false);
+            try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, post.getContent());
-            preparedStatement.setString(2, post.getCreated());
-            preparedStatement.setString(3, post.getUpdated());
-            preparedStatement.setString(4, post.getPostStatus().toString());
-            preparedStatement.setInt(5, 1);
-            preparedStatement.executeUpdate();
 
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if(generatedKeys.next()){
-                int id = generatedKeys.getInt(1);
-                post.setId(id);
-            }
+                preparedStatement.setString(1, post.getContent());
+                preparedStatement.setString(2, post.getCreated());
+                preparedStatement.setString(3, post.getUpdated());
+                preparedStatement.setString(4, post.getPostStatus().toString());
+                preparedStatement.setInt(5, 1);
+                preparedStatement.executeUpdate();
 
-            try {
-                connection.commit();
+                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    int id = generatedKeys.getInt(1);
+                    post.setId(id);
+                }
+
+                try {
+                    connection.commit();
+                } catch (SQLException throwables) {
+                    connection.rollback();
+                    throwables.printStackTrace();
+                }
             } catch (SQLException throwables) {
-                connection.rollback();
                 throwables.printStackTrace();
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            return post;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return post;
     }
 
-    @Override
+        @Override
     public Post update(Post post) {
-        try {Connection connection = JDBCUtil.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY);
+        try (PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(UPDATE_QUERY)) {
+            Connection connection = JDBCUtil.getConnection();
             connection.setAutoCommit(false);
 
 
@@ -219,8 +205,8 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
     @Override
     public void deleteById(Integer integer) {
-        try {Connection connection = JDBCUtil.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY);
+        try (PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(DELETE_QUERY)) {
+            Connection connection = JDBCUtil.getConnection();
             connection.setAutoCommit(false);
 
             preparedStatement.setString(1, Status.DELETED.toString());

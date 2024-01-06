@@ -9,11 +9,10 @@ import java.sql.SQLException;
 
 public class AppRunner {
     public static void main(String[] args) throws SQLException {
-        Connection connection = JDBCUtil.getInstance().getConnection();
+
         MainView mainView = new MainView();
         mainView.start();
 
-        connection.close();
 
 
     }

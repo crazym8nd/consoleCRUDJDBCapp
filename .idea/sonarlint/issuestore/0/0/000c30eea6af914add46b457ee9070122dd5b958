@@ -1,6 +1,6 @@
 
-g	java:S1129"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8ª¸ÒØÌ1
+g	java:S112#"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8áİ”íÍ1
 W
-java:S1141P"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8ª¸ÒØÌ1
-I
-java:S1172",Remove this unused method parameter "query".(¢Ì³ó8Ã°’öÌ1
+java:S1141I"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8âİ”íÍ1
+^
+java:S1128"<Remove this unused import 'com.mysql.cj.protocol.Resultset'.(«‹’ûÿÿÿÿ8•ÉÿïÍ1

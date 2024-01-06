@@ -18,32 +18,10 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
     private static final String UPDATE_QUERY = "UPDATE " + LABELS_TABLE + " SET name = ?, status = ? WHERE id = ?";
     private static final String DELETE_QUERY = "UPDATE " + LABELS_TABLE + " SET status = ? WHERE id = ?";
 
-    private List<Label> getLabelsData(String query) {
-        List<Label> labels = new ArrayList<>();
-        try {
-            Connection connection = JDBCUtil.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(READ_QUERY);
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                String status = rs.getString("status");
-                labels.add(new Label(id, name, (Status.valueOf(status))));
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-
-        return labels;
-    }
-
-
     @Override
     public Label getById(Integer integer) {
         Label label = null;
-        try {
-            PreparedStatement statement = JDBCUtil.getInstance().getConnection().prepareStatement(GET_BY_ID_QUERY);
+        try(PreparedStatement statement = JDBCUtil.getPreparedStatement(GET_BY_ID_QUERY)) {
             statement.setInt(1, integer);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -57,17 +35,32 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
             throw new RuntimeException(e);
         }
     }
-        @Override
+    @Override
     public List<Label> getAll() {
-        return getLabelsData(READ_QUERY);
+        List<Label> labels = new ArrayList<>();
+        try(PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(READ_QUERY)) {
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String status = rs.getString("status");
+                labels.add(new Label(id, name, (Status.valueOf(status))));
+            }
+        }catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return labels;
     }
 
     @Override
     public Label save(Label label) {
 
-        try {
-            Connection connection = JDBCUtil.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+        try(PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(INSERT_QUERY)) {
+            Connection connection = JDBCUtil.getConnection();
+            connection.setAutoCommit(false);
+
             preparedStatement.setString(1, label.getName());
             preparedStatement.setString(2, label.getStatus().toString());
             preparedStatement.executeUpdate();
@@ -92,14 +85,15 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
 
     @Override
     public Label update(Label label) {
-        try {
-            Connection connection = JDBCUtil.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY);
+        try(PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(UPDATE_QUERY)){
+            Connection connection = JDBCUtil.getConnection();
+            connection.setAutoCommit(false);
 
             preparedStatement.setString(1, label.getName());
             preparedStatement.setString(2, label.getStatus().toString());
             preparedStatement.setInt(3, label.getId());
             preparedStatement.executeUpdate();
+
             connection.commit();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -109,9 +103,10 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
 
     @Override
     public void deleteById(Integer integer) {
-        try {
-            Connection connection = JDBCUtil.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY);
+        try(PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(DELETE_QUERY)){
+            Connection connection = JDBCUtil.getConnection();
+            connection.setAutoCommit(false);
+
             preparedStatement.setString(1, Status.DELETED.toString());
             preparedStatement.setInt(2, integer);
             preparedStatement.executeUpdate();

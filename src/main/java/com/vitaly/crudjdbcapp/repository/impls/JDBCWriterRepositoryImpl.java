@@ -3,6 +3,7 @@ package com.vitaly.crudjdbcapp.repository.impls;
 import com.vitaly.crudjdbcapp.model.*;
 import com.vitaly.crudjdbcapp.repository.WriterRepository;
 import com.vitaly.crudjdbcapp.utils.JDBCUtil;
+import lombok.SneakyThrows;
 
 import java.sql.*;
 import java.util.*;
@@ -27,47 +28,11 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
 
     private static final String DELETE_QUERY = "UPDATE " + WRITER_TABLE  + " SET status = ? WHERE id = ?";
 
-    private static List<Writer> getWritersData(String query) {
-        List<Writer> writers = new ArrayList<>();
-        try{
-            Connection connection = JDBCUtil.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            connection.setAutoCommit(false);
-
-            ResultSet rs = preparedStatement.executeQuery();
-            Map<Integer, Writer> writerMap = new HashMap<>();
-
-            while(rs.next()){
-                int id = rs.getInt("w.id");
-                if(!writerMap.containsKey(id)){
-
-                    String firstName = rs.getString("first_name");
-                    String lastName = rs.getString("last_name");
-                    String status = rs.getString("status");
-
-                    Writer writer = Writer.builder()
-                            .id(id)
-                            .firstName(firstName)
-                            .lastName(lastName)
-                            .status(Status.valueOf(status))
-                            .build();
-
-                    writerMap.put(id, writer);
-                    writers.add(writer);
-                }
-
-            }
-
-    } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return writers;
-}
         @Override
     public Writer getById(Integer integer) {
         Writer writer = null;
-        try{
-            PreparedStatement statement = JDBCUtil.getInstance().getConnection().prepareStatement(GET_BY_ID_QUERY);
+            try (PreparedStatement statement = JDBCUtil.getPreparedStatement(GET_BY_ID_QUERY)) {
+
             statement.setInt(1, integer);
             ResultSet rs = statement.executeQuery();
             Map<Integer,Writer> writerMap = new HashMap<>();
@@ -102,44 +67,82 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
 
     @Override
     public List<Writer> getAll() {
-        return getWritersData(READ_QUERY);
-    }
+        List<Writer> writers = new ArrayList<>();
+        try (PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(READ_QUERY)) {
+            Connection connection = JDBCUtil.getConnection();
+            connection.setAutoCommit(false);
 
-    @Override
-    public Writer save(Writer writer) {
-        try{
-            Connection connection = JDBCUtil.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+            ResultSet rs = preparedStatement.executeQuery();
+            Map<Integer, Writer> writerMap = new HashMap<>();
 
-            preparedStatement.setString(1, writer.getFirstName());
-            preparedStatement.setString(2, writer.getLastName());
-            preparedStatement.setString(3, writer.getStatus().toString());
-            preparedStatement.executeUpdate();
+            while(rs.next()){
+                int id = rs.getInt("w.id");
+                if(!writerMap.containsKey(id)){
 
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if(generatedKeys.next()){
-                int id = generatedKeys.getInt(1);
-                writer.setId(id);
+                    String firstName = rs.getString("first_name");
+                    String lastName = rs.getString("last_name");
+                    String status = rs.getString("status");
+
+                    Writer writer = Writer.builder()
+                            .id(id)
+                            .firstName(firstName)
+                            .lastName(lastName)
+                            .status(Status.valueOf(status))
+                            .build();
+
+                    writerMap.put(id, writer);
+                    writers.add(writer);
+                }
+
             }
-            try {
-                connection.commit();
-            } catch (SQLException throwables) {
-                connection.rollback();
-                throwables.printStackTrace();
-            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        return writer;
-
+        return writers;
     }
 
     @Override
+    @SneakyThrows
+    public Writer save(Writer writer) {
+        try {
+            Connection connection = JDBCUtil.getConnection();
+            connection.setAutoCommit(false);
+            try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+
+
+                preparedStatement.setString(1, writer.getFirstName());
+                preparedStatement.setString(2, writer.getLastName());
+                preparedStatement.setString(3, writer.getStatus().toString());
+                preparedStatement.executeUpdate();
+
+                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    int id = generatedKeys.getInt(1);
+                    writer.setId(id);
+                }
+                try {
+                    connection.commit();
+                } catch (SQLException throwables) {
+                    connection.rollback();
+                    throwables.printStackTrace();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            return writer;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
     public Writer update(Writer writer) {
-        try{
-            Connection connection = JDBCUtil.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY);
+        try (PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(UPDATE_QUERY)) {
+            Connection connection = JDBCUtil.getConnection();
             connection.setAutoCommit(false);
 
             preparedStatement.setString(1, writer.getFirstName());
@@ -164,10 +167,9 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
 
     @Override
     public void deleteById(Integer integer) {
-       try {
-           Connection connection = JDBCUtil.getInstance().getConnection();
-           PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY);
-           connection.setAutoCommit(false);
+        try (PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(DELETE_QUERY)){
+            Connection connection = JDBCUtil.getConnection();
+            connection.setAutoCommit(false);
 
            preparedStatement.setString(1, Status.DELETED.toString());
            preparedStatement.setInt(2, integer);

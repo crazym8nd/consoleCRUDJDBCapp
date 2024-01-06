@@ -10,8 +10,8 @@
     <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>20</maven.compiler.source>
-        <maven.compiler.target>20</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <mysql.version>8.2.0</mysql.version>
         <lombok.version>1.18.30</lombok.version>
         <dbutils.version>1.7</dbutils.version>
@@ -20,7 +20,7 @@
         <assertj.version>3.24.2</assertj.version>
         <mockito.version>5.4.0</mockito.version>
         <h2.version>2.1.212</h2.version>
-        <liquibase.version>4.25.1</liquibase.version>
+        <liquibase.version>4.23.0</liquibase.version>
         <liquibase.propertyFile>${project.basedir}\src\main\resources\liquibase.properties</liquibase.propertyFile>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <snakeyaml.version>2.0</snakeyaml.version>
@@ -85,8 +85,37 @@
         <artifactId>snakeyaml</artifactId>
         <version>${snakeyaml.version}</version>
     </dependency>
+    <dependency>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-core</artifactId>
+        <version>${liquibase.version}</version>
+    </dependency>
 
 </dependencies>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-maven-plugin</artifactId>
+            <version>4.23.0</version>
+<configuration>
+    <changeLogFile>src/main/resources/db/changelog/changelog-master.sql</changeLogFile>
+    <propertyFile>src/main/resources/db/liquibase.properties</propertyFile>
+    <url>jdbc:mysql://localhost/crudapp</url>
+    <username>root</username>
+    <password>6663</password>
+</configuration>
+            <executions>
+                <execution>
+                    <phase>process-resources</phase>
+                    <goals>
+                        <goal>update</goal>
+                    </goals>
+            </execution>
+        </executions>
+        </plugin>
+    </plugins>
 
+</build>
 
 </project>

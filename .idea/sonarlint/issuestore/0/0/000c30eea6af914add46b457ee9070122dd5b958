@@ -2,17 +2,5 @@
 g	java:S1129"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8ª¸ÒØÌ1
 W
 java:S1141P"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8ª¸ÒØÌ1
-k
-java:S2095."OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(á°÷m8´¸ÒØÌ1
-l
-java:S2095"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(ìÂ8´¸ÒØÌ1
-l
-java:S2095F"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(ª´áÈ8Á°’öÌ1
-l
-java:S2095r"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(…ò¡8´¸ÒØÌ1
-q
-java:S2095a"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(äœ¼Ùşÿÿÿÿ8´¸ÒØÌ1
 I
 java:S1172",Remove this unused method parameter "query".(¢Ì³ó8Ã°’öÌ1
-^
-java:S1128"<Remove this unused import 'com.mysql.cj.protocol.Resultset'.(«‹’ûÿÿÿÿ8È°’öÌ1

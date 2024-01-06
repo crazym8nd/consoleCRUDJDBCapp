@@ -12,11 +12,11 @@ X
 java:S1141°"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8ˆ¸ÇúÌ1
 m
 java:S2095©"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(…ò¡8ù¸ÇúÌ1
-r
-java:S2095"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(äœ¼Ùşÿÿÿÿ8ù¸ÇúÌ1
 q
 java:S2095""OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(â…ÍÆÿÿÿÿÿ8ù¸ÇúÌ1
-k
-java:S2095F"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(á°÷m8ÏïßûÌ1
 l
 java:S2095p"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(ª´áÈ8Ÿ¶íúÌ1
+k
+java:S2095F"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(á°÷m8ÏïßûÌ1
+r
+java:S2095"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(äœ¼Ùşÿÿÿÿ8ù¸ÇúÌ1

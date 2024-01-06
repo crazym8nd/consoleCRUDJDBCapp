@@ -1,14 +1,12 @@
 package com.vitaly.crudjdbcapp.repository.impls;
 
-import com.mysql.cj.protocol.Resultset;
 import com.vitaly.crudjdbcapp.model.Label;
 import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.repository.LabelRepository;
 import com.vitaly.crudjdbcapp.utils.JDBCUtil;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class JDBCLabelRepositoryImpl implements LabelRepository {
     private static final String LABELS_TABLE = "labels";
@@ -30,9 +28,14 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
                 String status = rs.getString("status");
                 label = new Label(id, name, (Status.valueOf(status)));
             }
-            return label;
+            if (label != null){
+                return label;
+            } else {
+                return new Label(-1,null,null);
+            }
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getSQLState());
         }
     }
     @Override
@@ -47,8 +50,8 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
                 String status = rs.getString("status");
                 labels.add(new Label(id, name, (Status.valueOf(status))));
             }
-        }catch (SQLException throwables) {
-            throwables.printStackTrace();
+        }catch (SQLException e) {
+            throw new RuntimeException(e.getSQLState());
         }
 
         return labels;
@@ -56,54 +59,64 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
 
     @Override
     public Label save(Label label) {
-        try {
-            Connection connection = JDBCUtil.getConnection();
-            connection.setAutoCommit(false);
-            try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+        if (label != null) {
+            try {
+                Connection connection = JDBCUtil.getConnection();
+                connection.setAutoCommit(false);
+                try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
 
 
-                preparedStatement.setString(1, label.getName());
-                preparedStatement.setString(2, label.getStatus().toString());
-                preparedStatement.executeUpdate();
+                    preparedStatement.setString(1, label.getName());
+                    preparedStatement.setString(2, label.getStatus().toString());
+                    preparedStatement.executeUpdate();
 
-                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    int id = generatedKeys.getInt(1);
-                    label.setId(id);
+                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        int id = generatedKeys.getInt(1);
+                        label.setId(id);
+                    }
+                    try {
+                        connection.commit();
+                    } catch (SQLException e) {
+                        connection.rollback();
+                        throw new RuntimeException(e.getSQLState());
+                    }
                 }
-                try {
-                    connection.commit();
-                } catch (SQLException throwables) {
-                    connection.rollback();
-                    throwables.printStackTrace();
-                }
-            }
-        } catch (SQLException throwables) {
-                throwables.printStackTrace();
+            } catch (SQLException e) {
+                throw new RuntimeException(e.getSQLState());
             }
 
             return label;
+        } else {
+            return new Label(-1, null, null);
+        }
     }
     @Override
     public Label update(Label label) {
-        try(PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(UPDATE_QUERY)){
-            Connection connection = JDBCUtil.getConnection();
-            connection.setAutoCommit(false);
+        if (label != null) {
+            try (PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(UPDATE_QUERY)) {
+                Connection connection = JDBCUtil.getConnection();
+                connection.setAutoCommit(false);
 
-            preparedStatement.setString(1, label.getName());
-            preparedStatement.setString(2, label.getStatus().toString());
-            preparedStatement.setInt(3, label.getId());
-            preparedStatement.executeUpdate();
+                preparedStatement.setString(1, label.getName());
+                preparedStatement.setString(2, label.getStatus().toString());
+                preparedStatement.setInt(3, label.getId());
+                preparedStatement.executeUpdate();
 
-            connection.commit();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+                connection.commit();
+            } catch (SQLException e) {
+                throw new RuntimeException(e.getSQLState());
+            }
+            return label;
+        } else {
+            return new Label(-1, null, null);
         }
-        return label;
     }
 
     @Override
     public void deleteById(Integer integer) {
+        if(getById(integer).getStatus() != null)
+        {
         try(PreparedStatement preparedStatement = JDBCUtil.getPreparedStatement(DELETE_QUERY)){
             Connection connection = JDBCUtil.getConnection();
             connection.setAutoCommit(false);
@@ -112,8 +125,11 @@ public class JDBCLabelRepositoryImpl implements LabelRepository {
             preparedStatement.setInt(2, integer);
             preparedStatement.executeUpdate();
             connection.commit();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println(e.getSQLState());
+        }
+    } else {
+        throw new NoSuchElementException("Такого лейбла не существует");
         }
     }
 }

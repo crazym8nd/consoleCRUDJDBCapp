@@ -30,8 +30,8 @@ public class LabelService {
     public Label save (Label label){
         return labelRepository.save(label);
     }
-    public void update(Label label){
-        labelRepository.update(label);
+    public Label update (Label label){
+        return labelRepository.update(label);
     }
     public void deleteById(Integer id){
         labelRepository.deleteById(id);

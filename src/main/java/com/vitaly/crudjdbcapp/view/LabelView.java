@@ -3,8 +3,10 @@ package com.vitaly.crudjdbcapp.view;
 import com.vitaly.crudjdbcapp.controller.LabelController;
 import com.vitaly.crudjdbcapp.model.Label;
 
+import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /*
@@ -59,7 +61,7 @@ public class LabelView {
         String name = scanner.nextLine();
         try {
             Label createdLabel = labelController.createLabel(name);
-            System.out.println("Лейбл создан:" + createdLabel);
+            System.out.println("Лейбл создан: " + createdLabel);
         } catch (Exception e) {
             System.out.println("Ошибка при создании лейбла");
         }
@@ -71,12 +73,17 @@ public class LabelView {
         try {
             Integer id = Integer.parseInt(scanner.nextLine());
             Label labelToUpdate = labelController.getById(id);
+            if (labelToUpdate.getId() == -1) {
+                System.out.println("Лейбла с ID " + id + " не существует");
+                return;
+            }
             System.out.println("Введите новое имя:");
             String name = scanner.nextLine();
             labelToUpdate.setName(name);
             labelController.update(labelToUpdate);
             System.out.println("Изменения сохранены");
         } catch (Exception e) {
+            e.getMessage();
             System.out.println("Не получилось изменить лейбл");
         }
     }
@@ -84,11 +91,11 @@ public class LabelView {
     public void deleteLabel() {
         readLabels();
         System.out.println(DELETE_LABEL_MSG);
-        Integer id = scanner.nextInt();
+        Integer id = Integer.parseInt(scanner.nextLine());
         try {
             labelController.deleteById(id);
             System.out.println("Лейбл удален");
-        } catch (Exception e) {
+        } catch (NoSuchElementException e) {
             System.out.println("Ошибка при удалении лейбла");
         }
     }

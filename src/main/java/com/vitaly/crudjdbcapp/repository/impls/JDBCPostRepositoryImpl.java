@@ -9,10 +9,8 @@ import com.vitaly.crudjdbcapp.utils.JDBCUtil;
 import lombok.SneakyThrows;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static java.util.Calendar.*;
 
 public class JDBCPostRepositoryImpl implements PostRepository {
 
@@ -83,8 +81,6 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
         }
         return post;
     }
@@ -103,42 +99,20 @@ public class JDBCPostRepositoryImpl implements PostRepository {
 
             while (rs.next()) {
                 int id = rs.getInt("p.id");
-//TODO mapping v otdelnij method
                 if (!postMap.containsKey(id)) {
-                    List<Label> postLabels = new ArrayList<>();
-
-                    String content = rs.getString("content");
-                    String created = rs.getString("created");
-                    String updated = rs.getString("updated");
-                    String postStatus = rs.getString("post_status");
-
-                    Post post = Post.builder()
-                            .id(id)
-                            .content(content)
-                            .created(created)
-                            .updated(updated)
-                            .postStatus(PostStatus.valueOf(postStatus))
-                            .postLabels(postLabels)
-                            .build();
-
+                    Post post = mapToPost(rs);
                     postMap.put(id, post);
                     posts.add(post);
                 }
-//TODO null checks
+
                 String status = rs.getString("status");
                 if (status != null && status.equals("ACTIVE")) {
-                    int labelId = rs.getInt("label_id");
-                    String labelName = rs.getString("name");
                     List<Label> postLabels = postMap.get(id).getPostLabels();
-                    postLabels.add(Label.builder()
-                            .id(labelId)
-                            .name(labelName)
-                            .status(Status.valueOf(status))
-                            .build());
+                    postLabels.add(mapToLabel(rs));
                 }
             }
-        } catch (SQLException throwables) {
-            throw new RuntimeException(throwables.getMessage());
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getSQLState());
         }
         return posts;
     }
@@ -257,15 +231,15 @@ public class JDBCPostRepositoryImpl implements PostRepository {
         }
     }
 
-    private static Post mapToPost(ResultSet rs) throws SQLException {
-        int id = rs.getInt("p.id");
+    private  Post mapToPost(ResultSet rs) throws SQLException {
         List<Label> postLabels = new ArrayList<>();
-
+        int id = rs.getInt("p.id");
         String content = rs.getString("content");
         String created = rs.getString("created");
         String updated = rs.getString("updated");
         String postStatus = rs.getString("post_status");
-        Post post = Post.builder()
+
+        return Post.builder()
                 .id(id)
                 .content(content)
                 .created(created)
@@ -273,7 +247,16 @@ public class JDBCPostRepositoryImpl implements PostRepository {
                 .postStatus(PostStatus.valueOf(postStatus))
                 .postLabels(postLabels)
                 .build();
+    }
+    private Label mapToLabel(ResultSet rs) throws SQLException {
+        int labelId = rs.getInt("label_id");
+        String labelName = rs.getString("name");
+        String status = rs.getString("status");
 
-        return post;
+        return Label.builder()
+                .id(labelId)
+                .name(labelName)
+                .status(Status.valueOf(status))
+                .build();
     }
 }

@@ -102,7 +102,7 @@ public class PostView {
         Integer id = Integer.parseInt(scanner.nextLine());
         try {
             Post postToUpdate = postController.getById(id);
-            postToUpdate.setUpdated(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(Calendar.getInstance().getTime()));;
+            postToUpdate.setUpdated(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().getTime()));
             System.out.println("Введите новый content:");
             String content = scanner.nextLine();
             postToUpdate.setContent(content);

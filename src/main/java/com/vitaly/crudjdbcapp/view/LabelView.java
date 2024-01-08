@@ -3,7 +3,6 @@ package com.vitaly.crudjdbcapp.view;
 import com.vitaly.crudjdbcapp.controller.LabelController;
 import com.vitaly.crudjdbcapp.model.Label;
 
-import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;

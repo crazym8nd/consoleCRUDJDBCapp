@@ -1,11 +1,7 @@
 package com.vitaly.crudjdbcapp.view;
 
-import com.vitaly.crudjdbcapp.controller.PostController;
 import com.vitaly.crudjdbcapp.controller.WriterController;
-import com.vitaly.crudjdbcapp.model.Post;
 import com.vitaly.crudjdbcapp.model.Writer;
-
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
@@ -17,7 +13,6 @@ gh /crazym8nd
 public class WriterView {
 
     private final WriterController writerController = new WriterController();
-    private final PostController postController = new PostController();
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -61,7 +56,6 @@ public class WriterView {
         } while (!isExit);
     }
     public void createWriter(){
-        List<Post> writerPosts = new ArrayList<>();
 
         System.out.println(CREATE_WRITER_MSG);
         String firstName = scanner.nextLine();

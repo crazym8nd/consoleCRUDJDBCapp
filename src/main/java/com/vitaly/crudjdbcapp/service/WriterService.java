@@ -27,8 +27,8 @@ public class WriterService {
     public Writer save (Writer writer){
         return writerRepository.save(writer);
     }
-    public void update(Writer writer){
-        writerRepository.update(writer);
+    public Writer update(Writer writer){
+        return writerRepository.update(writer);
     }
     public void deleteById(Integer id){
         writerRepository.deleteById(id);

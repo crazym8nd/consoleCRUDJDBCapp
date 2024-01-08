@@ -2,8 +2,6 @@ package com.vitaly.crudjdbcapp.controller;
 
 import com.vitaly.crudjdbcapp.model.Label;
 import com.vitaly.crudjdbcapp.model.Status;
-import com.vitaly.crudjdbcapp.repository.LabelRepository;
-import com.vitaly.crudjdbcapp.repository.impls.JDBCLabelRepositoryImpl;
 import com.vitaly.crudjdbcapp.service.LabelService;
 
 import java.util.List;

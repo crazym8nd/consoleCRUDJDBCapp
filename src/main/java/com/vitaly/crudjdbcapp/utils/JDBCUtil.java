@@ -7,6 +7,8 @@ import java.sql.*;
 gh /crazym8nd
 */
 public class JDBCUtil {
+
+    private JDBCUtil(){}
     private static Connection connection;
     private static final String DATABASE_URL = "jdbc:mysql://localhost/crudapp";
     private static final String USER = "root";

@@ -3,10 +3,8 @@ package com.vitaly.crudjdbcapp.service;
 import com.vitaly.crudjdbcapp.model.Label;
 import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.repository.impls.JDBCLabelRepositoryImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,9 +15,9 @@ import static org.mockito.Mockito.*;
 class LabelServiceTest {
 
 
-    private JDBCLabelRepositoryImpl labelRepMock= mock(JDBCLabelRepositoryImpl.class);
-    private LabelService labelService =new LabelService(labelRepMock);
-    private List<Label> mockList = Arrays.asList(new Label(1, "label1", Status.ACTIVE),
+    private final JDBCLabelRepositoryImpl labelRepMock= mock(JDBCLabelRepositoryImpl.class);
+    private final LabelService labelService =new LabelService(labelRepMock);
+    private final List<Label> mockList = Arrays.asList(new Label(1, "label1", Status.ACTIVE),
             new Label(2, "label2", Status.ACTIVE),
             new Label(3, "label3", Status.ACTIVE));
     private Label mockLabel = mockList.get(0);

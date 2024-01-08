@@ -6,7 +6,6 @@ import com.vitaly.crudjdbcapp.model.PostStatus;
 import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.repository.PostRepository;
 import com.vitaly.crudjdbcapp.utils.JDBCUtil;
-import lombok.SneakyThrows;
 
 import java.sql.*;
 import java.util.*;

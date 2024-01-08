@@ -64,5 +64,7 @@ q
 Asrc/test/java/com/vitaly/crudjdbcapp/service/PostServiceTest.java,a\4\a4944f238b32d3c3dbf1da985669f9724e676260
 s
 Csrc/test/java/com/vitaly/crudjdbcapp/service/WriterServiceTest.java,e\2\e2b1aff36fabf4de614a08ecd2f39d5b02e7ca34
-c
-3src/main/java/com/vitaly/crudjdbcapp/view/hehe.java,f\9\f9876f84c77fde7ec1baf47e63c3f49fab12f7a0
+Z
+*src/main/resources/db/liquibase.properties,5\5\557a98558d85e9e561634da8591ff9d605c65125
+d
+4src/main/resources/db/changelog/changelog-master.sql,a\a\aa2577fe3911e670eb8f919ec9a18aadc7eb574c

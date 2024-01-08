@@ -133,9 +133,7 @@ public class JDBCWriterRepositoryImpl implements WriterRepository {
 
             return writer;
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (RuntimeException e) {
+        } catch (SQLException | RuntimeException e) {
             throw new RuntimeException(e);
         }
     }

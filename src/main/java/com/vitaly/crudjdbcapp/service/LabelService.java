@@ -5,8 +5,9 @@ import com.vitaly.crudjdbcapp.repository.LabelRepository;
 import com.vitaly.crudjdbcapp.repository.impls.JDBCLabelRepositoryImpl;
 
 import java.util.List;
+import java.util.Optional;
 
-// vie - controller - service - repository - bd
+
 /*
 26-Dec-23
 gh /crazym8nd
@@ -18,22 +19,34 @@ public class LabelService {
     public LabelService(LabelRepository labelRepository) {
         this.labelRepository = labelRepository;
     }
-    public LabelService(){
+
+    public LabelService() {
         this.labelRepository = new JDBCLabelRepositoryImpl();
     }
-    public Label getById(Integer id){
+
+    public Optional<Label> getById(Integer id) {
         return labelRepository.getById(id);
     }
-    public List<Label> getAll(){
+
+    public List<Label> getAll() {
         return labelRepository.getAll();
     }
-    public Label save (Label label){
+
+    public Label save(Label label) {
+        if (label == null) {
+            throw new IllegalArgumentException("Label cannot be null");
+        }
         return labelRepository.save(label);
     }
-    public Label update (Label label){
-        return labelRepository.update(label);
+
+    public void update(Label label) {
+        if (label == null) {
+            throw new IllegalArgumentException("Label cannot be null");
+        }
+        labelRepository.update(label);
     }
-    public void deleteById(Integer id){
+
+    public void deleteById(Integer id) {
         labelRepository.deleteById(id);
     }
 }

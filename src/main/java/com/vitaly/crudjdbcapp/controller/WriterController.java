@@ -7,10 +7,12 @@ import com.vitaly.crudjdbcapp.service.WriterService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class WriterController {
     private final WriterService writerService = new WriterService();
-    public Writer createWriter(String firsName, String lastName){
+
+    public Writer createWriter(String firsName, String lastName) {
         Writer createdWriter = new Writer();
         List<Post> writerPosts = new ArrayList<>();
         createdWriter.setFirstName(firsName);
@@ -19,16 +21,20 @@ public class WriterController {
         createdWriter.setWriterPosts(writerPosts);
         return writerService.save(createdWriter);
     }
-    public List<Writer> getAll(){
+
+    public List<Writer> getAll() {
         return writerService.getAll();
     }
-    public Writer getById(Integer id){
+
+    public Optional<Writer> getById(Integer id) {
         return writerService.getById(id);
     }
-    public void update(Writer writer){
+
+    public void update(Writer writer) {
         writerService.update(writer);
     }
-    public void deleteById(Integer id){
+
+    public void deleteById(Integer id) {
         writerService.deleteById(id);
     }
 }

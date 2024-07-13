@@ -4,12 +4,12 @@ import com.vitaly.crudjdbcapp.model.Label;
 import com.vitaly.crudjdbcapp.model.Post;
 import com.vitaly.crudjdbcapp.model.PostStatus;
 import com.vitaly.crudjdbcapp.model.Status;
-
 import com.vitaly.crudjdbcapp.repository.impls.JDBCPostRepositoryImpl;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -18,19 +18,20 @@ import static org.mockito.Mockito.*;
 
 class PostServiceTest {
 
-    private final JDBCPostRepositoryImpl postRepMock= mock(JDBCPostRepositoryImpl.class);
-    private final PostService postService =new PostService(postRepMock);
-    private final List<Label> postLabels = Arrays.asList(new Label (1, "label1", Status.ACTIVE), new Label (2, "label2", Status.ACTIVE), new Label (3, "label3", Status.ACTIVE));
+    private final JDBCPostRepositoryImpl postRepMock = mock(JDBCPostRepositoryImpl.class);
+    private final PostService postService = new PostService(postRepMock);
+    private final List<Label> postLabels = Arrays.asList(new Label(1, "label1", Status.ACTIVE), new Label(2, "label2", Status.ACTIVE), new Label(3, "label3", Status.ACTIVE));
     private final List<Post> mockPostList = Arrays.asList(new Post(1, "content", "created", "updated", PostStatus.ACTIVE, postLabels, 1),
             new Post(2, "content", "created", "updated", PostStatus.ACTIVE, postLabels, 1),
             new Post(3, "content", "created", "updated", PostStatus.ACTIVE, postLabels, 2));
-    private Post mockPost = mockPostList.get(0);
+    private final Post mockPost = mockPostList.get(0);
 
-//positive tests
+    //positive tests
     @Test
     void getByIdSuccess() {
-        when(postRepMock.getById(1)).thenReturn(mockPostList.get(0));
-        assertEquals(mockPost, postService.getById(1));
+        when(postRepMock.getById(1)).thenReturn(Optional.of(mockPostList.get(0)));
+        assertEquals(Optional.of(mockPost), postService.getById(1));
+
     }
 
     @Test
@@ -62,9 +63,9 @@ class PostServiceTest {
     void getByIdFail() {
 
         int invlidId = 999;
-        when(postRepMock.getById(invlidId)).thenReturn(null);
-        Post result = postService.getById(invlidId);
-        assertNull(result);
+        when(postRepMock.getById(invlidId)).thenReturn(Optional.empty());
+        Optional<Post> result = postService.getById(invlidId);
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -77,17 +78,12 @@ class PostServiceTest {
 
     @Test
     void saveFail() {
-        mockPost = null;
-        Post result = postService.save(mockPost);
-        assertNull(result);
+        assertThrows(IllegalArgumentException.class, () -> postService.save(null));
     }
 
     @Test
     void updateFail() {
-
-        mockPost = null;
-        Post result = postService.update(mockPost);
-        assertNull(result);
+        assertThrows(IllegalArgumentException.class, () -> postService.update(null));
     }
 
     @Test

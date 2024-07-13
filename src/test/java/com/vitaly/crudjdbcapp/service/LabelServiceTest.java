@@ -1,94 +1,96 @@
 package com.vitaly.crudjdbcapp.service;
 
 import com.vitaly.crudjdbcapp.model.Label;
-import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.repository.impls.JDBCLabelRepositoryImpl;
+import com.vitaly.crudjdbcapp.utils.LabelUtils;
+import jdk.jfr.Name;
 import org.junit.jupiter.api.Test;
 
-
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class LabelServiceTest {
+    private final JDBCLabelRepositoryImpl labelRepMock = mock(JDBCLabelRepositoryImpl.class);
+    private final LabelService labelService = new LabelService(labelRepMock);
 
 
-    private final JDBCLabelRepositoryImpl labelRepMock= mock(JDBCLabelRepositoryImpl.class);
-    private final LabelService labelService =new LabelService(labelRepMock);
-    private final List<Label> mockList = Arrays.asList(new Label(1, "label1", Status.ACTIVE),
-            new Label(2, "label2", Status.ACTIVE),
-            new Label(3, "label3", Status.ACTIVE));
-    private Label mockLabel = mockList.get(0);
-
-
-    //positive tests
+    //happy path
     @Test
-    void getByIdTestSuccess() {
-        when(labelRepMock.getById(1)).thenReturn(mockList.get(0));
-        assertEquals(mockLabel, labelService.getById(1));
+    @Name("Should return label by id")
+    void givenCorrectId_whenGetById_thenReturnLabel() {
+        when(labelRepMock.getById(1)).thenReturn(Optional.of(LabelUtils.getLabels().get(0)));
+        assertEquals(Optional.of(LabelUtils.getLabel()), labelService.getById(1));
     }
 
     @Test
-    void getAllTestSuccess() {
-        when(labelRepMock.getAll()).thenReturn(mockList);
+    @Name("Should return all labels")
+    void givenListLabels_whenGetAll_thenReturnLabels() {
+        when(labelRepMock.getAll()).thenReturn(LabelUtils.getLabels());
         assertEquals(3, labelService.getAll().size());
     }
 
     @Test
-    void saveTestSuccess() {
-       labelService.save(mockLabel);
-        verify(labelRepMock, times(1)).save(mockLabel);
+    @Name("Should save label")
+    void givenLabelForSave_whenSave_thenReturnLabel() {
+        labelService.save(LabelUtils.getLabel());
+        verify(labelRepMock, times(1)).save(LabelUtils.getLabel());
     }
 
     @Test
-    void updateTestSuccess() {
-        labelService.update(mockLabel);
-        verify(labelRepMock, times(1)).update(mockLabel);
+    @Name("Should update label")
+    void givenLabelForUpdate_whenUpdate_thenSuccess() {
+        labelService.update(LabelUtils.getLabel());
+        verify(labelRepMock, times(1)).update(LabelUtils.getLabel());
     }
 
     @Test
-    void deleteByIdTestSuccess() {
+    @Name("Should delete label")
+    void givenLabelForDelete_whenDelete_thenSuccess() {
         labelService.deleteById(1);
         verify(labelRepMock, times(1)).deleteById(1);
     }
 
     //negative tests
     @Test
-    void getByIdTestFail() {
+    @Name("Should return empty when id is invalid")
+    void givenInvalidId_whenGetById_thenReturnEmpty() {
         int invlidId = 999;
-        when(labelRepMock.getById(invlidId)).thenReturn(null);
-        Label result = labelService.getById(invlidId);
-        assertNull(result);
+        when(labelRepMock.getById(invlidId)).thenReturn(Optional.empty());
+        Optional<Label> result = labelService.getById(invlidId);
+        assertTrue(result.isEmpty());
     }
 
     @Test
-    void getAllTestFail() {
-        when(labelRepMock.getAll()).thenReturn(null);
+    @Name("Should return empty list when no labels in db")
+    void givenNoLabels_whenGetAll_thenReturnEmptyList() {
+        when(labelRepMock.getAll()).thenReturn(Collections.emptyList());
         List<Label> result = labelService.getAll();
-        assertNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
-    void saveTestFail() {
-        mockLabel = null;
-        Label result = labelService.save(mockLabel);
-        assertNull(result);
+    @Name("Should throw exception when save null label")
+    void givenNullLabel_whenSave_thenThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> labelService.save(null));
     }
 
     @Test
-    void updateTestFail() {
-        mockLabel = null;
-        Label result = labelService.update(mockLabel);
-        assertNull(result);
+    @Name("Should throw exception when update null label")
+    void givenNullLabel_whenUpdate_thenThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> labelService.update(null));
     }
 
     @Test
-    void deleteByIdTestFail() {
-        int invlidId = 999;
-        labelService.deleteById(invlidId);
-        verify(labelRepMock, times(1)).deleteById(invlidId);
+    @Name("Should call repository")
+    void givenInvalidId_whenDelete_thenCallRep() {
+        int invalidId = 999;
+        labelService.deleteById(invalidId);
+        verify(labelRepMock, times(1)).deleteById(invalidId);
     }
+
 
 }

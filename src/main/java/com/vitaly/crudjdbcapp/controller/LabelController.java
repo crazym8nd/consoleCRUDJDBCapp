@@ -5,6 +5,7 @@ import com.vitaly.crudjdbcapp.model.Status;
 import com.vitaly.crudjdbcapp.service.LabelService;
 
 import java.util.List;
+import java.util.Optional;
 
 public class LabelController {
     private final LabelService labelService = new LabelService();
@@ -20,7 +21,7 @@ public class LabelController {
         return labelService.getAll();
     }
 
-    public Label getById(Integer id) {
+    public Optional<Label> getById(Integer id) {
         return labelService.getById(id);
     }
 
@@ -30,6 +31,12 @@ public class LabelController {
 
     public void deleteById(Integer id) {
         labelService.deleteById(id);
+        boolean exists = labelService.getById(id).isPresent();
+        if (exists) {
+            System.out.println("Failed to delete label with ID: " + id);
+        } else {
+            System.out.println("Label with ID " + id + " has been successfully deleted.");
+        }
     }
 
 }

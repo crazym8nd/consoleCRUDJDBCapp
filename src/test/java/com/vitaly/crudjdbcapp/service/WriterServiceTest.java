@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -23,13 +24,13 @@ class WriterServiceTest {
     private final List<Writer> mockWriterList = Arrays.asList(new Writer(1, "writer1", "created", mockPostList, Status.ACTIVE),
             new Writer(2, "writer2", "created", mockPostList, Status.ACTIVE),
             new Writer(3, "writer3", "created", mockPostList, Status.ACTIVE));
-    private Writer mockWriter = mockWriterList.get(0);
+    private final Writer mockWriter = mockWriterList.get(0);
 
     //positive tests
     @Test
     void getByIdSuccess() {
-        when(writerRepMock.getById(1)).thenReturn(mockWriterList.get(0));
-        assertEquals(mockWriter, writerService.getById(1));
+        when(writerRepMock.getById(1)).thenReturn(Optional.of(mockWriterList.get(0)));
+        assertEquals(Optional.of(mockWriter), writerService.getById(1));
     }
 
     @Test
@@ -59,10 +60,10 @@ class WriterServiceTest {
     //negative tests
     @Test
     void getByIdFail() {
-        int invlidId = 999;
-        when(writerRepMock.getById(invlidId)).thenReturn(null);
-        Writer result = writerService.getById(invlidId);
-        assertNull(result);
+        int invalidId = 999;
+        when(writerRepMock.getById(invalidId)).thenReturn(Optional.empty());
+        Optional<Writer> result = writerService.getById(invalidId);
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -74,16 +75,12 @@ class WriterServiceTest {
 
     @Test
     void saveFail() {
-        mockWriter = null;
-        Writer result = writerService.save(mockWriter);
-        assertNull(result);
+        assertThrows(IllegalArgumentException.class, () -> writerService.save(null));
     }
 
     @Test
     void updateFail() {
-        mockWriter = null;
-        Writer result = writerService.update(mockWriter);
-        assertNull(result);
+        assertThrows(IllegalArgumentException.class, () -> writerService.update(null));
     }
 
     @Test
